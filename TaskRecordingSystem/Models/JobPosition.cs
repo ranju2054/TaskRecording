@@ -15,7 +15,8 @@ namespace TaskRecordingSystem.Models
 
         [Required]
         public string Position { get; set; }
-      
+
+        [Required]
         public string Grade { get; set; }
 
         [Required]

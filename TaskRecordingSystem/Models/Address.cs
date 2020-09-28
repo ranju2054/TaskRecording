@@ -12,8 +12,12 @@ namespace TaskRecordingSystem.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
+        [Display(Name ="Permanent District")]
         public string  PermanentDistrict { get; set; }
+
+        [Display(Name ="Temporary District")]
         [Required]
         public string TemporaryDistrict { get; set; }
         [Required]
