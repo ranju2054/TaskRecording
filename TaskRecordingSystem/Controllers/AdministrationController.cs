@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TaskRecordingSystem.ViewModels;
 
 namespace TaskRecordingSystem.Controllers
 {
-
+   [Authorize]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -32,17 +33,18 @@ namespace TaskRecordingSystem.Controllers
             if (ModelState.IsValid)
             {
                 // We just need to specify a unique role name to create a new role
-                IdentityRole identityRole = new IdentityRole
+                IdentityRole identityRole = new IdentityRole();
+                var user = new IdentityRole
                 {
                     Name = model.RoleName
                 };
 
                 // Saves the role in the underlying AspNetRoles table
-                IdentityResult result = await roleManager.CreateAsync(identityRole);
+                var result = await roleManager.CreateAsync(user);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("index", "home");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 foreach (IdentityError error in result.Errors)
@@ -79,7 +81,7 @@ namespace TaskRecordingSystem.Controllers
             };
 
             // Retrieve all the Users
-            foreach (var user in userManager.Users)
+            foreach (var user in userManager.Users.ToList())
             {
                 // If the user is in this role, add the username to
                 // Users property of EditRoleViewModel. This model

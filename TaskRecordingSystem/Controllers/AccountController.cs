@@ -64,7 +64,7 @@ namespace TaskRecordingSystem.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("index", "home");
+                    return RedirectToAction("CreateRole", "Administration");
                 }
                
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");

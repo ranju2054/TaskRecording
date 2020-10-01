@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TaskRecordingSystem.Models;
 
 namespace TaskRecordingSystem.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly UserDbContext _context;
@@ -19,11 +21,24 @@ namespace TaskRecordingSystem.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    var userDbContext = _context.Employees.Include(e => e.Address).Include(e => e.Department).Include(e => e.Gender).Include(e => e.JobPosition).Include(e => e.MaritalStatus);
+        //    return View(await userDbContext.ToListAsync());
+        //}
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
         {
-            var userDbContext = _context.Employees.Include(e => e.Address).Include(e => e.Department).Include(e => e.Gender).Include(e => e.JobPosition).Include(e => e.MaritalStatus);
-            return View(await userDbContext.ToListAsync());
+            // ViewData["GetTaskDetails"] = search;
+            List<Employee> query = await _context.Employees.Include(e => e.Address).Include(e => e.Department).Include(e => e.Gender).Include(e => e.JobPosition).Include(e => e.MaritalStatus).ToListAsync();
+            if (!String.IsNullOrEmpty(search))
+            {
+                query = await _context.Employees.Where(e => e.Name.Contains(search)).ToListAsync();
+
+            }
+            return View(query);
         }
+
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -51,10 +66,10 @@ namespace TaskRecordingSystem.Controllers
         // GET: Employees/Create
         public IActionResult Create()
         {
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "ContactNumber");
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Place");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
             ViewData["GenderId"] = new SelectList(_context.Genders, "Id", "GenderStatus");
-            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Level");
+            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Position");
             ViewData["MaritalStatusId"] = new SelectList(_context.MaritalStatuses, "Id", "Status");
             return View();
         }
@@ -72,10 +87,10 @@ namespace TaskRecordingSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "ContactNumber", employee.AddressId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Place", employee.AddressId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             ViewData["GenderId"] = new SelectList(_context.Genders, "Id", "GenderStatus", employee.GenderId);
-            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Level", employee.JobPositionId);
+            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Position", employee.JobPositionId);
             ViewData["MaritalStatusId"] = new SelectList(_context.MaritalStatuses, "Id", "Status", employee.MaritalStatusId);
             return View(employee);
         }
@@ -93,10 +108,10 @@ namespace TaskRecordingSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "ContactNumber", employee.AddressId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Place", employee.AddressId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             ViewData["GenderId"] = new SelectList(_context.Genders, "Id", "GenderStatus", employee.GenderId);
-            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Level", employee.JobPositionId);
+            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Position", employee.JobPositionId);
             ViewData["MaritalStatusId"] = new SelectList(_context.MaritalStatuses, "Id", "Status", employee.MaritalStatusId);
             return View(employee);
         }
@@ -133,10 +148,10 @@ namespace TaskRecordingSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "ContactNumber", employee.AddressId);
+            ViewData["AddressId"] = new SelectList(_context.Addresses, "Id", "Place", employee.AddressId);
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             ViewData["GenderId"] = new SelectList(_context.Genders, "Id", "GenderStatus", employee.GenderId);
-            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Level", employee.JobPositionId);
+            ViewData["JobPositionId"] = new SelectList(_context.JobPositions, "Id", "Position", employee.JobPositionId);
             ViewData["MaritalStatusId"] = new SelectList(_context.MaritalStatuses, "Id", "Status", employee.MaritalStatusId);
             return View(employee);
         }

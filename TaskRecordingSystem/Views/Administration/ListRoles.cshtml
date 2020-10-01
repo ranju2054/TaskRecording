@@ -4,43 +4,89 @@
     ViewBag.Title = "All Roles";
 }
 
-<h1>All Roles</h1>
 
-@if (Model.Any())
-{
-    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole"
-       asp-controller="Administration">Add new role</a>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Tell the browser to be responsive to screen width -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    foreach (var role in Model)
-    {
-        <div class="card mb-3">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+<!-- Google Font: Source Sans Pro -->
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3>All Roles</h3>
+                </div>
+
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="card">
             <div class="card-header">
-                Role Id : @role.Id
+                <div class="row">
+                    <div class="col-md-4">
+
+                        @if (Model.Any())
+                        {
+                            <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole"
+                               asp-controller="Administration">Add new role</a>
+
+                            foreach (var role in Model)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        Role Id : @role.Id
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@role.Name</h5>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a class="btn btn-primary" asp-action="EditRole" asp-controller="Administration" asp-route-id="@role.Id">Edit</a>
+                                        <a href="#" class="btn btn-danger">Delete</a>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="card">
+                                <div class="card-header">
+                                    No roles created yet
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        Use the button below to create a role
+                                    </h5>
+                                    <a class="btn btn-primary" style="width:auto"
+                                       asp-controller="Administration" asp-action="CreateRole">
+                                        Create Role
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+                @section Scripts {
+                    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+                }
             </div>
-            <div class="card-body">
-                <h5 class="card-title">@role.Name</h5>
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-primary" asp-action="EditRole" asp-controller="Administration" asp-route-id="@role.Id">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </div>
+
         </div>
-    }
-}
-else
-{
-    <div class="card">
-        <div class="card-header">
-            No roles created yet
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">
-                Use the button below to create a role
-            </h5>
-            <a class="btn btn-primary" style="width:auto"
-               asp-controller="Administration" asp-action="CreateRole">
-                Create Role
-            </a>
-        </div>
-    </div>
-}
+    </section>
+
+</div>

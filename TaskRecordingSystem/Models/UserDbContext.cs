@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TaskRecordingSystem.Models;
+using TaskRecordingSystem.ViewModels;
 
 
 
@@ -24,9 +25,10 @@ namespace TaskRecordingSystem.Models
         public DbSet<Gender> Genders { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        
+        public DbSet<Priority> Priorities { get; set; }
 
-      
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +36,11 @@ namespace TaskRecordingSystem.Models
             
 
         }
+        
+
+      
+
+       
 
       
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TaskRecordingSystem.Models;
 
 namespace TaskRecordingSystem.Controllers
 {
+   [Authorize]
     public class AddressesController : Controller
     {
         private readonly UserDbContext _context;
@@ -19,9 +21,22 @@ namespace TaskRecordingSystem.Controllers
         }
 
         // GET: Addresses
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Addresses.ToListAsync());
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
         {
-            return View(await _context.Addresses.ToListAsync());
+            // ViewData["GetTaskDetails"] = search;
+            List<Address> query = await _context.Addresses.ToListAsync();
+            if (!String.IsNullOrEmpty(search))
+            {
+                query = await _context.Addresses.Where(e => e.Place.Contains(search)).ToListAsync();
+
+            }
+            return View(query);
         }
 
         // GET: Addresses/Details/5
@@ -59,7 +74,8 @@ namespace TaskRecordingSystem.Controllers
             {
                 _context.Add(address);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                   return RedirectToAction(nameof(Index));
+               // return RedirectToAction("Create", "Employees");
             }
             return View(address);
         }

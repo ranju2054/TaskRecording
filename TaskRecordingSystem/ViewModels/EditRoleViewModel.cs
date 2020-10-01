@@ -20,5 +20,5 @@ namespace TaskRecordingSystem.ViewModels
 
         public List<string> Users { get; set; }
     
-}
+    }
 }

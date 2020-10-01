@@ -19,8 +19,10 @@ namespace TaskRecordingSystem.Models
         [Required]
         public string Name { get; set; }
 
+        //[Display(Name ="Many Employees")]
+        //public List<string> ManyName { get; set; }
         [Required]
-        [Display(Name =" Add Address")]
+        [Display(Name ="Current Address")]
         public int AddressId { get; set; }
        
         [ForeignKey("AddressId")]
@@ -52,21 +54,13 @@ namespace TaskRecordingSystem.Models
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
+        [Required]
         [Display(Name = "Job Position")]
         public int JobPositionId { get; set; }
 
         [ForeignKey("JobPositionId")]
        
         public virtual JobPosition JobPosition { get; set; }
-
       
-
-
-
-
-
-
-
-
     }
 }

@@ -10,7 +10,7 @@ using TaskRecordingSystem.Models;
 
 namespace TaskRecordingSystem.Controllers
 {
-   
+   [Authorize]
     public class ProjectsController : Controller
     {
         private readonly UserDbContext _context;
@@ -20,11 +20,24 @@ namespace TaskRecordingSystem.Controllers
             _context = context;
         }
 
-        // GET: Projects
-        public async Task<IActionResult> Index()
+//        GET: Projects
+        //public async Task<IActionResult> Index()
+        //{
+        //    var userDbContext = _context.Projects.Include(p => p.Department).Include(p => p.Status);
+        //    return View(await userDbContext.ToListAsync());
+        //}
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
         {
-            var userDbContext = _context.Projects.Include(p => p.Department).Include(p => p.Status);
-            return View(await userDbContext.ToListAsync());
+            // ViewData["GetTaskDetails"] = search;
+            List<Project> query = await _context.Projects.Include(p => p.Department).Include(p => p.Status).ToListAsync();
+            if (!String.IsNullOrEmpty(search))
+            {
+                query = await _context.Projects.Where(e => e.ProjectName.Contains(search)).ToListAsync();
+
+            }
+            return View(query);
         }
 
         // GET: Projects/Details/5

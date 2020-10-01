@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,20 +35,18 @@ namespace TaskRecordingSystem.Models
         [Required]
         [Display(Name ="End Date")]
         public DateTime EndDate { get; set; }
-        public int PriorityId { get; set; }
 
-        [ForeignKey("PriorityId")]
         [Display(Name = "Priority")]
+        public int PriorityId { get; set; }
+    
+        [ForeignKey("PriorityId")]
+       
         public virtual Priority Priority{ get; set; }
 
         [Display(Name = "Add Employee")]
         public int EmployeeId { get; set; }
 
         [ForeignKey("EmployeeId")]
-        public virtual ICollection<Employee> Employees { get; set; }
-
-
-
-
+        public virtual Employee Employees { get; set; }
     }
 }

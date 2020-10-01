@@ -35,7 +35,8 @@ namespace TaskRecordingSystem
             services.AddRazorPages();
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<UserDbContext>();
-            //services.AddMvc(options => {
+            //services.AddMvc(options =>
+            //{
             //    var policy = new AuthorizationPolicyBuilder()
             //                    .RequireAuthenticatedUser()
             //                    .Build();

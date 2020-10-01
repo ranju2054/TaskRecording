@@ -278,9 +278,6 @@ namespace TaskRecordingSystem.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GenderId")
                         .HasColumnType("int");
 
@@ -299,8 +296,6 @@ namespace TaskRecordingSystem.Migrations
                     b.HasIndex("AddressId");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("GenderId");
 
@@ -341,6 +336,8 @@ namespace TaskRecordingSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("PriorityId");
 
@@ -537,10 +534,6 @@ namespace TaskRecordingSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskRecordingSystem.Models.EmployeeTask", null)
-                        .WithMany("Employees")
-                        .HasForeignKey("EmployeeId");
-
                     b.HasOne("TaskRecordingSystem.Models.Gender", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
@@ -562,6 +555,12 @@ namespace TaskRecordingSystem.Migrations
 
             modelBuilder.Entity("TaskRecordingSystem.Models.EmployeeTask", b =>
                 {
+                    b.HasOne("TaskRecordingSystem.Models.Employee", "Employees")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TaskRecordingSystem.Models.Priority", "Priority")
                         .WithMany()
                         .HasForeignKey("PriorityId")

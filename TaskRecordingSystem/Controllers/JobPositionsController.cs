@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TaskRecordingSystem.Models;
 
 namespace TaskRecordingSystem.Controllers
 {
+    [Authorize]
     public class JobPositionsController : Controller
     {
         private readonly UserDbContext _context;
@@ -22,6 +24,19 @@ namespace TaskRecordingSystem.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.JobPositions.ToListAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
+        {
+            ViewData["GetPositionDetails"] = search;
+            var query = from x in _context.JobPositions select x;
+            if (!String.IsNullOrEmpty(search))
+            {
+                query = query.Where(x => x.Position.Contains(search));
+
+            }
+            return View(await query.ToListAsync());
         }
 
         // GET: JobPositions/Details/5
@@ -59,7 +74,8 @@ namespace TaskRecordingSystem.Controllers
             {
                 _context.Add(jobPosition);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                 return RedirectToAction(nameof(Index));
+               // return RedirectToAction("Create", "Employees");
             }
             return View(jobPosition);
         }

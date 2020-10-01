@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using TaskRecordingSystem.Models;
 
 namespace TaskRecordingSystem.Controllers
 {
+    [Authorize]
     public class EmployeeTasksController : Controller
     {
         private readonly UserDbContext _context;
@@ -21,8 +23,20 @@ namespace TaskRecordingSystem.Controllers
         // GET: EmployeeTasks
         public async Task<IActionResult> Index()
         {
-            var userDbContext = _context.Tasks.Include(e => e.Project);
+            var userDbContext = _context.Tasks.Include(e => e.Project).Include(e => e.Employees).Include(e=>e.Priority);
             return View(await userDbContext.ToListAsync());
+        }
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
+        {
+           // ViewData["GetTaskDetails"] = search;
+            List<EmployeeTask> query =  await _context.Tasks.Include(e => e.Project).Include(e => e.Employees).Include(e => e.Priority).ToListAsync(); 
+            if (!String.IsNullOrEmpty(search))
+            {
+                query =  await _context.Tasks.Where(e => e.TaskName.Contains(search)).ToListAsync();
+
+            }
+            return View(query);
         }
 
         // GET: EmployeeTasks/Details/5
@@ -35,6 +49,8 @@ namespace TaskRecordingSystem.Controllers
 
             var employeeTask = await _context.Tasks
                 .Include(e => e.Project)
+                .Include( e=> e.Employees)
+                .Include(e=>e.Priority)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employeeTask == null)
             {
@@ -48,6 +64,8 @@ namespace TaskRecordingSystem.Controllers
         public IActionResult Create()
         {
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "ProjectName");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name");
+            ViewData["PriorityId"] = new SelectList(_context.Priorities, "Id", "PriorityStatus");
             return View();
         }
 
@@ -56,7 +74,7 @@ namespace TaskRecordingSystem.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TaskName,Description,ProjectId,StartDate,EndDate,Priority,EmployeeId")] EmployeeTask employeeTask)
+        public async Task<IActionResult> Create([Bind("Id,TaskName,Description,ProjectId,StartDate,EndDate,PriorityId,EmployeeId")] EmployeeTask employeeTask)
         {
             if (ModelState.IsValid)
             {
@@ -65,6 +83,8 @@ namespace TaskRecordingSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "ProjectName", employeeTask.ProjectId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", employeeTask.EmployeeId);
+            ViewData["PriorityId"] = new SelectList(_context.Priorities, "Id", "PriorityStatus", employeeTask.PriorityId);
             return View(employeeTask);
         }
 
@@ -82,6 +102,8 @@ namespace TaskRecordingSystem.Controllers
                 return NotFound();
             }
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "ProjectName", employeeTask.ProjectId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", employeeTask.EmployeeId);
+            ViewData["PriorityId"] = new SelectList(_context.Priorities, "Id", "PriorityStatus", employeeTask.PriorityId);
             return View(employeeTask);
         }
 
@@ -90,7 +112,7 @@ namespace TaskRecordingSystem.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TaskName,Description,ProjectId,StartDate,EndDate,Priority,EmployeeId")] EmployeeTask employeeTask)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TaskName,Description,ProjectId,StartDate,EndDate,PriorityId,EmployeeId")] EmployeeTask employeeTask)
         {
             if (id != employeeTask.Id)
             {
@@ -118,6 +140,8 @@ namespace TaskRecordingSystem.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "ProjectName", employeeTask.ProjectId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", employeeTask.EmployeeId);
+            ViewData["PriorityId"] = new SelectList(_context.Priorities, "Id", "PriorityStatus", employeeTask.PriorityId);
             return View(employeeTask);
         }
 
